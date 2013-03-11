@@ -4,13 +4,23 @@ hadoop-gp-tools
 The Hadoop GP Toolbox provides tools to exchange features between a Geodatabase and Hadoop and run Hadoop workflow jobs.
 
 ## Features
+* Tools that export features from ArcGIS to Hadoop, and import features from Hadoop to ArcGIS
+* Tools to submit a workflow to process data in Hadoop, and to check the status of a workflow
+* Tools to convert features to JSON (Will eventually use JSON Conversion tools in the ArcGIS Geoprocessing Data Management Toolbox)
 
 ## Instructions
+1. Download and unzip the .zip file to a suitable location or clone the repository with a git tool.
+2. In the ‘ArcToolbox’ pane of ArcGIS desktop, use the ‘Add Toolbox…’ command to add the Hadoop Tools toolbox (HadoopTools.pyt) file into ArcGIS Desktop.
+3. Use the tools individually, in models or in scripts.
 
 ## Requirements
 
 * ArcGIS 10.1 or later.
 * A Hadoop system with WebHDFS support.
+
+## Dependencies
+* For WebHDFS support, a Python library webhdfs-py is bundled in.  Source is located at [webhdfs-py](https://github.com/Esri/webhdfs-py)
+* Requests python library is required for OozieUtils.py (installation doc is located at http://docs.python-requests.org/en/latest/user/install/#install)
 
 ## Resources
 
