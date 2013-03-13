@@ -9,9 +9,10 @@ The Hadoop GP Toolbox provides tools to exchange features between a Geodatabase 
 * Tools to convert features to JSON (Will eventually use JSON Conversion tools in the ArcGIS Geoprocessing Data Management Toolbox)
 
 ## Instructions
-1. Download and unzip the .zip file to a suitable location or clone the repository with a git tool.
-2. In the ‘ArcToolbox’ pane of ArcGIS desktop, use the ‘Add Toolbox…’ command to add the Hadoop Tools toolbox (HadoopTools.pyt) file into ArcGIS Desktop.
-3. Use the tools individually, in models or in scripts.
+1. Download this repository as a .zip file and unzip to a suitable location or clone the repository with a git tool.
+2. Verify the Python dependencies are met, installing WebHDFS and Requests libraries if needed.
+3. In the ‘ArcToolbox’ pane of ArcGIS desktop, use the ‘Add Toolbox…’ command to add the Hadoop Tools toolbox (the HadoopTools.pyt file you saved in step 1) file into ArcGIS Desktop.
+4. Use the tools individually, or use them in models and scripts, such as the examples in: [Hadoop-Spatial-Tools](https://github.com/Esri/hadoop-spatial-tools)
 
 ## Requirements
 
