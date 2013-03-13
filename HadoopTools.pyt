@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, tempfile, shutil
 import arcpy
 from webhdfs import WebHDFS, WebHDFSError
 from OozieUtil import Oozie, OozieError, Configuration
@@ -14,10 +14,12 @@ class Toolbox(object):
         self.tools = [CopyToHDFS, CopyFromHDFS, FeaturesToJSON, JSONToFeatures, ExecuteWorkflow] #, HDFSCommand]
 
 ######################################################################
+import traceback
 def AddExceptionError(messages, message = '') :
     for ei in sys.exc_info() :
         if isinstance(ei, Exception) :
             messages.addErrorMessage('%s : %s' % (message if (message!= None and len(message) > 0) else 'Unexpected error', str(ei)))
+    messages.addErrorMessage(traceback.format_exc())
     
 ######################################################################
 def SetExceptionError(parameter, message = '') :
@@ -225,18 +227,37 @@ class CopyFromHDFS(object):
         webhdfs_host = parameters[0].value
         webhdfs_port = int(parameters[1].value)
         webhdfs_user = parameters[2].value
-        webhdfs_file = parameters[3].value
-        out_local_file = unicode(parameters[4].value)
+        webhdfs_file_name = unicode(parameters[3].value)
+        out_local_file_name = unicode(parameters[4].value)
         
-        if os.path.isfile(out_local_file):
-            os.remove(out_local_file)
-        if os.path.isfile(out_local_file):
-            arcpy.gp.addError("Cannot delete: " + out_local_file)
+        try :
+            if os.path.isfile(out_local_file_name):
+                os.remove(out_local_file_name)
+        except:        
+            arcpy.gp.addError("Cannot delete: " + out_local_file_name)
             sys.exit()
         
         try :
             wh = WebHDFS(webhdfs_host, webhdfs_port, webhdfs_user)
-            wh.copyFromHDFS(unicode(webhdfs_file), unicode(out_local_file), overwrite = bool(arcpy.gp.overwriteOutput))
+            fs = wh.getFileStatus(webhdfs_file_name)
+            if fs['type'] == 'FILE':
+                wh.copyFromHDFS(webhdfs_file_name, out_local_file_name, overwrite = bool(arcpy.gp.overwriteOutput))
+            else: #DIRECTORY - copy all non-empty files from the directory (non-recursively) and append to the output file with NL
+                temp_file = tempfile.NamedTemporaryFile(delete = False)
+                temp_file_name = temp_file.name
+                temp_file.close()
+                
+                with open(out_local_file_name, "wb") as out_local_file:
+                    file_list = wh.listDirEx(webhdfs_file_name)
+                    for file in file_list:
+                        if file['length'] != 0 :
+                            wh.copyFromHDFS(webhdfs_file_name + '/' + file['pathSuffix'], temp_file_name, overwrite = True)
+                            temp_file = open(temp_file_name, "rb")
+                            shutil.copyfileobj(temp_file, out_local_file, length = 1024 * 1024)
+                            #out_local_file.write('\n')
+                            temp_file.close()
+                os.remove(temp_file_name)
+                
         except WebHDFSError as whe:
             messages.addErrorMessage(str(whe))
         except:
