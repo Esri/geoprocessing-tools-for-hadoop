@@ -1,7 +1,7 @@
 gp-tools-hadoop
 ===============
 
-The GP Tools for Hadoop provides tools to exchange features between a Geodatabase and Hadoop and run Hadoop workflow jobs.
+The GP Tools for Hadoop provides tools to exchange features between a Geodatabase and a Hadoop system, and to run Hadoop workflow jobs.
 
 ## Features
 * Tools that export features from ArcGIS to Hadoop, and import features from Hadoop to ArcGIS
