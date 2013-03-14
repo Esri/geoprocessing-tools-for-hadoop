@@ -12,7 +12,7 @@ The GP Tools for Hadoop provides tools to exchange features between a Geodatabas
 1. Download this repository as a .zip file and unzip to a suitable location or clone the repository with a git tool.
 2. Verify the Python dependencies are met, installing WebHDFS and Requests libraries if needed.
 3. In the ‘ArcToolbox’ pane of ArcGIS desktop, use the ‘Add Toolbox…’ command to add the Hadoop Tools toolbox (the HadoopTools.pyt file you saved in step 1) file into ArcGIS Desktop.
-4. Use the tools individually, or use them in models and scripts, such as the examples in: [Hadoop-Spatial-Tools](https://github.com/Esri/hadoop-spatial-tools)
+4. Use the tools individually, or use them in models and scripts, such as the examples in: [Spatial Tools for Hadoop](https://github.com/Esri/spatial-tools-hadoop)
 
 ## Requirements
 
