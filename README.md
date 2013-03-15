@@ -3,10 +3,14 @@ gp-tools-hadoop
 
 The GP Tools for Hadoop provides tools to exchange features between a Geodatabase and a Hadoop system, and to run Hadoop workflow jobs.
 
+These tools are part of a larger set of [Spatial Tools for Hadoop](https://github.com/Esri/spatial-tools-hadoop).
+
 ## Features
+
 * Tools to convert between Feature Classes in a Geodatabase and JSON formatted files
 * Tools that copy data files from ArcGIS to Hadoop, and copy files from Hadoop to ArcGIS
 * Tools to run an [Oozie](http://oozie.apache.org/) workflow in Hadoop, and to check the status of a submitted workflow
+* [Wiki](https://github.com/Esri/gp-tools-hadoop/wiki)
 
 ## Instructions
 1. Download this repository as a .zip file and unzip to a suitable location or clone the repository with a git tool.
