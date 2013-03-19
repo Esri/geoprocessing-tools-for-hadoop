@@ -142,7 +142,7 @@ def DumpFC2JSON(fc, ftmp, pjson = False) :
     if feature_type :
         ftmp.write(u'"hasZ": {0},'.format(u'true' if desc_fc.hasZ else u'false') + NL)
         ftmp.write(u'"hasM": {0},'.format(u'true' if desc_fc.hasM else u'false') + NL)
-        ftmp.write(u'"spatialReference": {{"wkid":"{0}"}},'.format(desc_fc.spatialReference.factoryCode) + NL)
+        ftmp.write(u'"spatialReference": {{"wkid":{0}}},'.format(desc_fc.spatialReference.factoryCode) + NL)
                
     #prepare field list
     field_list = []
