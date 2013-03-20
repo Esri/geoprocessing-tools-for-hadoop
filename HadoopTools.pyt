@@ -2,7 +2,7 @@ import os, sys, tempfile, shutil
 import arcpy
 from webhdfs import WebHDFS, WebHDFSError
 from OozieUtil import Oozie, OozieError, Configuration
-import JSONUtil
+import JSONUtil 
 
 ######################################################################
 class Toolbox(object):
@@ -267,8 +267,8 @@ class CopyFromHDFS(object):
 
 ######################################################################
 class FeaturesToJSON(object):
-    _esrijsonCollection = 'ENCLOSED_JSON'
-    _esrijsonSimple = 'UNENCLOSED_JSON'
+    _esrijsonEnclosed = 'ENCLOSED_JSON'
+    _esrijsonUnenclosed = 'UNENCLOSED_JSON'
     
     def __init__(self):
         self.label = "Features To JSON"
@@ -303,8 +303,8 @@ class FeaturesToJSON(object):
             direction="Input")
         
         json_type.filter.type = "ValueList"
-        json_type.filter.list = [FeaturesToJSON._esrijsonCollection, FeaturesToJSON._esrijsonSimple]
-        json_type.value = FeaturesToJSON._esrijsonCollection
+        json_type.filter.list = [FeaturesToJSON._esrijsonEnclosed, FeaturesToJSON._esrijsonUnenclosed]
+        json_type.value = FeaturesToJSON._esrijsonEnclosed
 
         pjson = arcpy.Parameter(
             name="format_json",
@@ -336,10 +336,10 @@ class FeaturesToJSON(object):
         json_type = parameters[2].value
         b_pjson = parameters[3].value
         with open(unicode(out_json_file), 'wb') as json_file :
-            if json_type == FeaturesToJSON._esrijsonCollection :
-                JSONUtil.DumpFC2JSON(in_features, json_file, pjson = bool(b_pjson))
-            elif json_type == FeaturesToJSON._esrijsonSimple :
-                JSONUtil.DumpFC2JSONSimple(in_features, json_file, pjson = bool(b_pjson))
+            if json_type == FeaturesToJSON._esrijsonEnclosed :
+                JSONUtil.ConvertFC2JSON(in_features, json_file, pjson = bool(b_pjson))
+            elif json_type == FeaturesToJSON._esrijsonUnenclosed :
+                JSONUtil.ConvertFC2JSONUnenclosed(in_features, json_file, pjson = bool(b_pjson))
         return
 
 ######################################################################
@@ -369,7 +369,18 @@ class JSONToFeatures(object):
         
         out_features.parameterDependencies = [in_json_file.name]
 
-        parameters = [in_json_file, out_features]
+        json_type = arcpy.Parameter(
+            name="json_type",
+            displayName="JSON type",
+            datatype="String",
+            parameterType="Optional",
+            direction="Input")
+        
+        json_type.filter.type = "ValueList"
+        json_type.filter.list = [FeaturesToJSON._esrijsonEnclosed, FeaturesToJSON._esrijsonUnenclosed]
+        json_type.value = FeaturesToJSON._esrijsonEnclosed
+
+        parameters = [in_json_file, out_features, json_type]
         return parameters
 
     def isLicensed(self):
@@ -385,6 +396,7 @@ class JSONToFeatures(object):
     def execute(self, parameters, messages):
         in_json_file = parameters[0].value
         out_features = parameters[1].value
+        json_type = parameters[2].value
         
         if arcpy.Exists(out_features):
             arcpy.Delete_management(out_features)
@@ -392,8 +404,17 @@ class JSONToFeatures(object):
             messages.addErrorMessage("Cannot delete: " + unicode(out_features))
             return
         
-        with open(unicode(in_json_file), 'rb') as json_fc_file:
-            JSONUtil.ImportFromJSON(json_fc_file, unicode(out_features))
+        try:
+            with open(unicode(in_json_file), 'rb') as json_fc_file:
+                if json_type == FeaturesToJSON._esrijsonEnclosed :
+                        JSONUtil.ConvertJSONToFC(json_fc_file, unicode(out_features))
+                elif json_type == FeaturesToJSON._esrijsonUnenclosed :
+                        JSONUtil.ConvertJSONToFCUnenclosed(json_fc_file, unicode(out_features))
+        except JSONUtil.JUError as err:
+            messages.addErrorMessage(str(err))
+        except:
+            AddExceptionError(messages)
+
         return
 
 ######################################################################
