@@ -3,7 +3,10 @@ gp-tools-hadoop
 
 The __Geoprocessing Tools for Hadoop__ provides tools to help integrate ArcGIS with Hadoop. More specifically, 
 tools are provided that:
-* Enable the exchange of data between an ArcGIS Geodatabase and a Hadoop system, and 
+* Enable the exchange of data between an 
+[ArcGIS Geodatabase]
+(http://resources.arcgis.com/en/help/main/10.1/index.html#/What_is_a_geodatabase/003n00000001000000/) and a 
+Hadoop system, and 
 * Allow ArcGIS users to run Hadoop workflow jobs.
 
 These tools are part of a larger set of [GIS Tools for Hadoop](https://github.com/Esri/gis-tools-for-hadoop).
@@ -19,8 +22,10 @@ workflow.
 ## Instructions
 1. Download this repository as a .zip file and unzip to a suitable location or clone the repository with a git tool.
 2. Verify the Python dependencies are met, installing WebHDFS and Requests libraries if needed.
-3. In the ‘ArcToolbox’ pane of [ArcGIS for Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop/), use the ‘Add Toolbox…’ command to add the Hadoop Tools 
-toolbox (the HadoopTools.pyt file you saved in step 1) file into ArcGIS Desktop.
+3. In the ‘ArcToolbox’ pane of [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop/), 
+use the [‘Add Toolbox…’ command](http://resources.arcgis.com/en/help/main/10.1/index.html#//003q0000001m000000) 
+to add the Hadoop Tools toolbox (the HadoopTools.pyt file you saved in step 1) file 
+into ArcGIS Desktop.
 4. Use the tools individually, or use them in models and scripts, such as the examples 
 in: [Spatial Tools for Hadoop](https://github.com/Esri/spatial-tools-hadoop).
 
