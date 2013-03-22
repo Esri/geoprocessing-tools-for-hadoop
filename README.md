@@ -1,7 +1,9 @@
 gp-tools-hadoop
 ===============
 
-The Geoprocessing Tools for Hadoop provides tools to exchange features between a Geodatabase and a Hadoop system, and to run Hadoop workflow jobs.
+The Geoprocessing Tools for Hadoop provides tools to help integrate ArcGIS with Hadoop. More specifically, tools are provided that:
+* Enable the exchange of data between an ArcGIS Geodatabase and a Hadoop system, and 
+* Allow ArcGIS users to run Hadoop workflow jobs.
 
 These tools are part of a larger set of [GIS Tools for Hadoop](https://github.com/Esri/gis-tools-for-hadoop).
 
