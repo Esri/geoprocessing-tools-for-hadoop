@@ -9,7 +9,7 @@ tools are provided that:
 Hadoop system, and 
 * Allow ArcGIS users to run Hadoop workflow jobs.
 
-These tools are part of a larger set of [GIS Tools for Hadoop](https://github.com/Esri/gis-tools-for-hadoop).
+See these tools in action as part of the samples in [GIS Tools for Hadoop](https://github.com/Esri/gis-tools-for-hadoop).
 
 ## Features
 
