@@ -451,16 +451,16 @@ class ExecuteWorkflow(object):
         track_status.filter.list = ["TRACK_STATUS", "NO_TRACK_STATUS"]
         track_status.value = True
         
-        job_succeeded = arcpy.Parameter(
-            name="job_succeeded",
-            displayName="Job succeeded",
+        job_succseeded = arcpy.Parameter(
+            name="job_succseeded",
+            displayName="Job succseeded",
             datatype="Boolean",
             parameterType="Derived",
             direction="Output")
 
-        job_succeeded.value = False
+        job_succseeded.value = False
 
-        parameters = [in_oozie_url, in_jobprops_file, track_status, job_succeeded]
+        parameters = [in_oozie_url, in_jobprops_file, track_status, job_succseeded]
         return parameters
 
     def isLicensed(self):

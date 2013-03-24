@@ -91,7 +91,7 @@ if __name__ == '__main__':
         conf = Configuration(r'c:\temp\job.properties')
     
         # Create Oozie client        
-        oozieClient = Oozie('http://python1.esri.com:11000/oozie')
+        oozieClient = Oozie('http://mymachine.esri.com:11000/oozie')
         # Submit Job
         
         jobID = oozieClient.submit(conf.xmldata)
