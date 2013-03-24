@@ -27,7 +27,7 @@ use the [‘Add Toolbox…’ command](http://resources.arcgis.com/en/help/main/
 to add the Hadoop Tools toolbox (the HadoopTools.pyt file you saved in step 1) file 
 into ArcGIS Desktop.
 4. Use the tools individually, or use them in models and scripts, such as the examples 
-in: [Spatial Tools for Hadoop](https://github.com/Esri/spatial-tools-hadoop).
+in: [GIS Tools for Hadoop](https://github.com/Esri/gis-tools-for-hadoop).
 
 ## Requirements
 
