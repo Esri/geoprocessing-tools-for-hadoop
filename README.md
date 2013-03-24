@@ -1,4 +1,4 @@
-gp-tools-hadoop
+geoprocessing-tools-for-hadoop
 ===============
 
 The __Geoprocessing Tools for Hadoop__ provides tools to help integrate ArcGIS with Hadoop. More specifically, 
