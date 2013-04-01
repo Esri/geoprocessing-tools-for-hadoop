@@ -21,7 +21,7 @@ workflow.
 
 ## Instructions
 1. Download this repository as a .zip file and unzip to a suitable location or clone the repository with a git tool.
-2. Verify the Python dependencies are met, installing WebHDFS and Requests libraries if needed.
+2. WebHDFS and Requests libraries in the tool folder are provided for convenience. Remove 'webhdfs' or 'requests' folders in case there is a need to use libraries installed in /site-packages folder.
 3. In the ‘ArcToolbox’ pane of [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop/), 
 use the [‘Add Toolbox…’ command](http://resources.arcgis.com/en/help/main/10.1/index.html#//003q0000001m000000) 
 to add the Hadoop Tools toolbox (the HadoopTools.pyt file you saved in step 1) file 
@@ -35,7 +35,8 @@ in: [GIS Tools for Hadoop](https://github.com/Esri/gis-tools-for-hadoop).
 * A Hadoop system with WebHDFS support.
 
 ## Dependencies
-* For WebHDFS support, a Python library webhdfs-py is bundled in.  Source is located 
+* WebHDFS and Requests are bundled-in and reside in the tool folder.
+* A Python library webhdfs-py is required for WebHDFS support.  Source is located 
 at [webhdfs-py](https://github.com/Esri/webhdfs-py).
 * The Requests python library is required for OozieUtils.py (installation doc is located 
 at http://docs.python-requests.org/en/latest/user/install/#install).

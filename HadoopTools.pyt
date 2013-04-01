@@ -614,3 +614,5 @@ class ExecuteWorkflow(object):
         #except :
             #AddExceptionError(messages)
         #return
+        
+print "TEST PASSED"
