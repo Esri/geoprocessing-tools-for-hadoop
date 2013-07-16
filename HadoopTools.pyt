@@ -422,7 +422,7 @@ class ExecuteWorkflow(object):
 
     def __init__(self):
         self.label = "Execute Workflow"
-        self.description = "Executes Oozie workwlow"
+        self.description = "Executes Oozie workflow"
         self.canRunInBackground = False
 
     def getParameterInfo(self):
@@ -471,7 +471,9 @@ class ExecuteWorkflow(object):
         return
                 
     def updateMessages(self, parameters):
-        return
+	in_oozie_url = parameters[0].value
+	if in_oozie_url and not ':/' in in_oozie_url:
+	   parameters[0].setWarningMessage("Oozie URL does not appear to be a valid URL")
 
     def execute(self, parameters, messages):
         # Get parameters
