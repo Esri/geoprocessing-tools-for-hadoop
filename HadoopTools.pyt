@@ -28,6 +28,19 @@ def SetExceptionError(parameter, message = '') :
             parameter.setErrorMessage('%s : %s' % (message if (message!= None and len(message) > 0) else 'Unexpected error', str(ei)))
 
 ######################################################################
+def FixSchemeSpecifier(url, scheme, b_add) :
+    if (url == None) : return None
+    scheme += "://"
+    schIndex = url.find(scheme)
+    if schIndex >= 0 :
+        if b_add == False :
+            return url[schIndex + len(scheme) : ]
+    else :
+        if b_add == True :
+            return scheme + url
+    return url        
+        
+######################################################################
 class CopyToHDFS(object):
     def __init__(self):
         self.label = "Copy To HDFS"
@@ -98,7 +111,7 @@ class CopyToHDFS(object):
     def updateParameters(self, parameters):
         if parameters[4].altered == False :
             in_file      = parameters[0].value        
-            webhdfs_host = parameters[1].value
+            webhdfs_host = FixSchemeSpecifier(parameters[1].value, 'http', False)
             webhdfs_port = parameters[2].value
             webhdfs_user = parameters[3].value
                     
@@ -114,7 +127,7 @@ class CopyToHDFS(object):
         return
                 
     def updateMessages(self, parameters):
-        webhdfs_host = parameters[1].value
+        webhdfs_host = FixSchemeSpecifier(parameters[1].value, 'http', False)
         webhdfs_port = int(parameters[2].value)
         webhdfs_user = parameters[3].value
         webhdfs_file = parameters[4].value
@@ -147,7 +160,7 @@ class CopyToHDFS(object):
     def execute(self, parameters, messages):
         #'''
         input_file = parameters[0].value
-        webhdfs_host = parameters[1].value
+        webhdfs_host = FixSchemeSpecifier(parameters[1].value, 'http', False)
         webhdfs_port = int(parameters[2].value)
         webhdfs_user = parameters[3].value
         webhdfs_file = parameters[4].value
@@ -224,7 +237,7 @@ class CopyFromHDFS(object):
         return
 
     def execute(self, parameters, messages):
-        webhdfs_host = parameters[0].value
+        webhdfs_host = FixSchemeSpecifier(parameters[0].value, 'http', False)
         webhdfs_port = int(parameters[1].value)
         webhdfs_user = parameters[2].value
         webhdfs_file_name = unicode(parameters[3].value)
@@ -475,7 +488,7 @@ class ExecuteWorkflow(object):
 
     def execute(self, parameters, messages):
         # Get parameters
-        oozie_url = parameters[0].value
+        oozie_url = FixSchemeSpecifier(parameters[0].value, 'http', True)
         jobprops_file = unicode(parameters[1].value)
         b_track_status = parameters[2].value
         b_job_succeeded = False    
