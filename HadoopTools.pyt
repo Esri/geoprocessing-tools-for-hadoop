@@ -18,14 +18,14 @@ import traceback
 def AddExceptionError(messages, message = '') :
     for ei in sys.exc_info() :
         if isinstance(ei, Exception) :
-            messages.addErrorMessage('%s : %s' % (message if (message!= None and len(message) > 0) else 'Unexpected error', str(ei)))
+            messages.addErrorMessage('%s : %s' % (message if (message != None and len(message) > 0) else 'Unexpected error', str(ei)))
     messages.addErrorMessage(traceback.format_exc())
     
 ######################################################################
 def SetExceptionError(parameter, message = '') :
     for ei in sys.exc_info() :
         if isinstance(ei, Exception) :
-            parameter.setErrorMessage('%s : %s' % (message if (message!= None and len(message) > 0) else 'Unexpected error', str(ei)))
+            parameter.setErrorMessage('%s : %s' % (message if (message != None and len(message) > 0) else 'Unexpected error', str(ei)))
 
 ######################################################################
 def FixSchemeSpecifier(url, scheme, b_add) :
@@ -39,7 +39,18 @@ def FixSchemeSpecifier(url, scheme, b_add) :
         if b_add == True :
             return scheme + url
     return url        
-        
+
+######################################################################
+def CheckHDFSFileExist(whConn, webhdfs_file) :
+    if webhdfs_file and len(unicode(webhdfs_file)) :
+        (webhdfs_path, webhdfs_name) = os.path.split(webhdfs_file)
+    
+    files = whConn.listDirEx(webhdfs_path)
+    for f in files :
+        if f['type'] == 'FILE' and f['pathSuffix'] == webhdfs_name :
+            return True
+    return False
+
 ######################################################################
 class CopyToHDFS(object):
     def __init__(self):
@@ -99,7 +110,7 @@ class CopyToHDFS(object):
             direction="Output")
 
         b_append.filter.type = "ValueList"
-        b_append.filter.list = ["CREATE", "APPEND"]
+        b_append.filter.list = ["APPEND", "CREATE"]
         b_append.value = False
         
         parameters = [in_file, host, port, user, in_remote_file, b_append, out_remote_file]
@@ -135,25 +146,21 @@ class CopyToHDFS(object):
         webhdfs_path = ''
         webhdfs_name = ''
         files = []
-        if webhdfs_file and len(unicode(webhdfs_file)) :
-            (webhdfs_path, webhdfs_name) = os.path.split(webhdfs_file)
         
         try :
             wh = WebHDFS(webhdfs_host, webhdfs_port, webhdfs_user)
-            files = wh.listDirEx(webhdfs_path)
+            b_file_exist = CheckHDFSFileExist(wh, webhdfs_file)
         except WebHDFSError as whe:
             parameters[4].setErrorMessage(str(whe))
         except :
             SetExceptionError(parameters[4])
             return
         
-        for f in files :
-            if f['type'] == 'FILE' and f['pathSuffix'] == webhdfs_name :
-                if arcpy.gp.overwriteOutput:
-                    parameters[4].setWarningMessage("Remote file '" + webhdfs_file + "' already exists.")
-                else :
-                    parameters[4].setErrorMessage("Remote file '" + webhdfs_file + "' already exists.")
-                break
+        if b_file_exist :
+            if arcpy.gp.overwriteOutput:
+                parameters[4].setWarningMessage("Remote file '" + webhdfs_file + "' already exists.")
+            else :
+                parameters[4].setErrorMessage("Remote file '" + webhdfs_file + "' already exists.")
 
         return
 
@@ -168,7 +175,9 @@ class CopyToHDFS(object):
         
         try :
             wh = WebHDFS(webhdfs_host, webhdfs_port, webhdfs_user)
-            if b_append :
+            b_file_exist = CheckHDFSFileExist(wh, webhdfs_file)
+            
+            if b_append and b_file_exist:
                 wh.appendToHDFS(unicode(input_file), unicode(webhdfs_file))
             else:
                 wh.copyToHDFS(unicode(input_file), unicode(webhdfs_file), overwrite = bool(arcpy.gp.overwriteOutput))
