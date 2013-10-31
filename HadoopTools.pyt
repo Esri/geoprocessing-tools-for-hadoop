@@ -1,4 +1,4 @@
-import os, sys, tempfile, shutil
+import os, sys, tempfile, shutil, codecs
 import arcpy
 from webhdfs import WebHDFS, WebHDFSError
 from OozieUtil import Oozie, OozieError, Configuration
@@ -427,7 +427,7 @@ class JSONToFeatures(object):
             return
         
         try:
-            with open(unicode(in_json_file), 'rb') as json_fc_file:
+            with codecs.open(unicode(in_json_file), 'rb', encoding = 'utf_8_sig') as json_fc_file :    
                 if json_type == FeaturesToJSON._esrijsonEnclosed :
                         JSONUtil.ConvertJSONToFC(json_fc_file, unicode(out_features))
                 elif json_type == FeaturesToJSON._esrijsonUnenclosed :

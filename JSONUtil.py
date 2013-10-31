@@ -49,10 +49,10 @@ def _createDataset(output_fc, json_fc, geomType = None, geomFieldName = None) :
 
 ##################################################
 def _iterLoadUnenclosedJSON(json_file):
-    buffer = ''
+    buffer = u''
     dec = json.JSONDecoder(strict=False)
     while True :
-        line = json_file.read(1024 * 4)
+        line = unicode(json_file.read(1024 * 4))
         if len(line) == 0 : 
             break;
         buffer += line.strip(u' \n\r\t')
@@ -368,13 +368,17 @@ class JUError(Exception):
 ######################################################################
 ######################################################################
 ######################################################################
+import codecs
+
 if __name__ == '__main__':
     
     arcpy.gp.overwriteOutput = 1
 
     try:
-        with open(unicode('C:\TEMP\CA_Crime2_U.json'), 'rb') as json_fc_file:
-            ImportFromJSONUnenclosed(json_fc_file, unicode(r'C:\Users\azhigimont\Documents\ArcGIS\Default.gdb\testJSONUtil'))
+        fName = u'c:/temp/test.json'
+        with codecs.open(fName, 'rb', encoding = 'utf_8_sig') as json_fc_file :    
+            #ConvertJSONToFCUnenclosed(json_fc_file, u'C:/temp/temp.gdb/testJSONUtil')
+            ConvertJSONToFC(json_fc_file, u'C:/temp/temp.gdb/testJSONUtil')
 
     except JUError as err:
         print str(err)
