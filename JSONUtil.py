@@ -71,28 +71,28 @@ def _getFCProps(feature) :
     # get geometry props
     geomType = None
     if u'geometry' in feature :
-
         geom = feature[u'geometry']
-        if u'rings' in geom :
-            geomType = u'esriGeometryPolygon'
-        elif u'paths' in geom :
-            geomType = u'esriGeometryPolyline'
-        elif u'points' in geom :
-            geomType = u'esriGeometryMultipoint'
-        elif u'x' in geom :
-            geomType = u'esriGeometryPoint'
-        else :
-            raise JUError('Unknown geometry type')
+        if geom != None :
+            if u'spatialReference' in geom :
+                json_fc[u'spatialReference'] = geom[u'spatialReference']
+            if u'z' in geom :
+                json_fc[u'hasZ'] = True
+            if u'm' in geom :
+                json_fc[u'hasM'] = True
+                
+            if u'rings' in geom :
+                geomType = u'esriGeometryPolygon'
+            elif u'paths' in geom :
+                geomType = u'esriGeometryPolyline'
+            elif u'points' in geom :
+                geomType = u'esriGeometryMultipoint'
+            elif u'x' in geom :
+                geomType = u'esriGeometryPoint'
+            else :
+                raise JUError('Unknown geometry type')
 
-        if geomType :
-            json_fc[u'geometryType'] = geomType
+        json_fc[u'geometryType'] = geomType
         
-        if u'spatialReference' in geom :
-            json_fc[u'spatialReference'] = geom[u'spatialReference']
-        if u'z' in geom :
-            json_fc[u'hasZ'] = True
-        if u'm' in geom :
-            json_fc[u'hasM'] = True
 
     # get attribute props
     if u'attributes' in feature:
@@ -128,8 +128,21 @@ def _getGeometryType(json_fc) :
                         'esriGeometryMultipoint' : 'MULTIPOINT',
                         'esriGeometryPoint'      : 'POINT'}[json_fc[u'geometryType']]
     except :
-            raise JUError('Unknown geometry type')
+        geomType = 'POINT'
+        
     return geomType
+
+##################################################
+def _getEmptyGeom(geomType) :
+    if geomType == 'POINT' :
+        return u'{"x" : null}'
+    if geomType == 'MULTIPOINT' :
+        return u'{"points" : [  ]}'
+    if geomType == 'POLYLINE' :
+        return u'{"paths" : [ ]}'
+    if geomType == 'POLYGON' :
+        return u'{"rings" : [ ]}'
+    raise JUError('Unknown geometry type')
 
 ##################################################
 def ConvertJSONToFCUnenclosed(json_file, output_fc) :
@@ -139,9 +152,12 @@ def ConvertJSONToFCUnenclosed(json_file, output_fc) :
     for feature in _iterLoadUnenclosedJSON(json_file) :
         if 'fields' in feature :
             raise JUError(json_file.name + ' is not an unenclosed JSON')
+        
         json_fc = _getFCProps(feature)
-        json_file.seek(0)
+        if u'geometryType' in json_fc and json_fc[u'geometryType'] == None: 
+            continue
         break
+    json_file.seek(0)
 
     geomType = _getGeometryType(json_fc)
 
@@ -161,6 +177,9 @@ def ConvertJSONToFCUnenclosed(json_file, output_fc) :
 
     #insert features
     try :
+        if geomType :
+            geomEmpty = _getEmptyGeom(geomType)
+            
         with arcpy.da.InsertCursor(output_fc, field_list + ([u'shape@json'] if geomType else [])) as cursor:
             for feature in _iterLoadUnenclosedJSON(json_file) :
                 row = []
@@ -169,6 +188,8 @@ def ConvertJSONToFCUnenclosed(json_file, output_fc) :
                     
                 if geomType :
                     geom = unicode(json.dumps(feature[u'geometry']))
+                    if geom == 'null' :
+                        geom = geomEmpty
                     row.append(geom)
                     
                 cursor.insertRow(row)
@@ -202,6 +223,9 @@ def ConvertJSONToFC(json_file, output_fc) :
     
     #insert features
     try :
+        if geomType :
+            geomEmpty = _getEmptyGeom(geomType)
+            
         with arcpy.da.InsertCursor(output_fc, field_list + ([u'shape@json'] if geomType else [])) as cursor:
             for feature in json_fc[u'features'] :
                 row = []
@@ -210,6 +234,8 @@ def ConvertJSONToFC(json_file, output_fc) :
                     
                 if geomType :
                     geom = unicode(json.dumps(feature[u'geometry']))
+                    if geom == 'null' :
+                        geom = geomEmpty
                     row.append(geom)
                     
                 cursor.insertRow(row)
@@ -375,7 +401,8 @@ if __name__ == '__main__':
     arcpy.gp.overwriteOutput = 1
 
     try:
-        fName = u'c:/temp/test.json'
+        #fName = u'c:/temp/test-null-geom.json'
+        fName = u'c:/temp/testMOnly - null.json'
         with codecs.open(fName, 'rb', encoding = 'utf_8_sig') as json_fc_file :    
             #ConvertJSONToFCUnenclosed(json_fc_file, u'C:/temp/temp.gdb/testJSONUtil')
             ConvertJSONToFC(json_fc_file, u'C:/temp/temp.gdb/testJSONUtil')
