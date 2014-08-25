@@ -152,6 +152,7 @@ class CopyToHDFS(object):
             b_file_exist = CheckHDFSFileExist(wh, webhdfs_file)
         except WebHDFSError as whe:
             parameters[4].setErrorMessage(str(whe))
+            return
         except :
             SetExceptionError(parameters[4])
             return
