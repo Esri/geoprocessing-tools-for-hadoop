@@ -18,6 +18,7 @@ See these tools in action as part of the samples in [GIS Tools for Hadoop](https
 * Tools to run an [Oozie](http://oozie.apache.org/) workflow in Hadoop, and to check the status of a submitted 
 workflow.
 * [Wiki](https://github.com/Esri/geoprocessing-tools-for-hadoop/wiki) of available geoprocessing tools.
+* [Example](https://github.com/Esri/gis-tools-for-hadoop/wiki/Getting-the-results-of-a-Hive-query-into-ArcGIS) of how to run the geoprocessing tools.
 
 ## Instructions
 1. Download this repository as a .zip file and unzip to a suitable location or clone the repository with a git tool.
