@@ -21,7 +21,7 @@ workflow.
 
 ## Instructions
 1. Download this repository as a .zip file and unzip to a suitable location or clone the repository with a git tool.
-2. WebHDFS and Requests libraries in the tool folder are provided for convenience. Remove 'webhdfs' or 'requests' folders in case there is a need to use libraries installed in /site-packages folder.
+2. WebHDFS and Requests libraries in the tool folder are provided for convenience. If you know you will using libraries installed in /site-packages folder then remove 'webhdfs' or 'requests' folders - otherwise do not.
 3. In the ‘ArcToolbox’ pane of [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop/), 
 use the [‘Add Toolbox…’ command](http://resources.arcgis.com/en/help/main/10.1/index.html#//003q0000001m000000) 
 to add the Hadoop Tools toolbox (the HadoopTools.pyt file you saved in step 1) file 
