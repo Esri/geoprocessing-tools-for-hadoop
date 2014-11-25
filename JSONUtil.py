@@ -133,6 +133,19 @@ def _getGeometryType(json_fc) :
     return geomType
 
 ##################################################
+def _getEsriGeometryType(geom_type) :
+    esriGeomType = None
+    try :
+        esriGeomType = {'Polygon'    : 'esriGeometryPolygon',
+                        'Polyline'   : 'esriGeometryPolyline',
+                        'MultiPoint' : 'esriGeometryMultipoint',
+                        'Point'      : 'esriGeometryPoint'}[geom_type]
+    except :
+        esriGeomType = 'POINT'
+        
+    return esriGeomType
+
+##################################################
 def _getEmptyGeom(geomType) :
     if geomType == 'POINT' :
         return u'{"x" : null}'
@@ -214,12 +227,15 @@ def ConvertJSONToFC(json_file, output_fc) :
     
     #prepare new field list for insert cursor
     field_list = []
+    field_list_date = []
     desc_output_fc = arcpy.Describe(output_fc)
     output_fields = desc_output_fc.fields
     
     for field in output_fields :
         if field.type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area']:
             field_list.append(unicode(field.name))
+        if field.type == 'Date':
+            field_list_date.append(unicode(field.name))
     
     #insert features
     try :
@@ -230,7 +246,13 @@ def ConvertJSONToFC(json_file, output_fc) :
             for feature in json_fc[u'features'] :
                 row = []
                 for field in attributeFieldList :
-                    row.append(feature[u'attributes'][field])
+                    
+                    attr = feature[u'attributes'][field]
+                    
+                    # convert JSDate integer to string
+                    if (type(attr) == int or type(attr) == long) and (field in field_list_date):
+                        attr = datetime.datetime.utcfromtimestamp(float(attr) / 1000.)
+                    row.append(attr)
                     
                 if geomType :
                     geom = unicode(json.dumps(feature[u'geometry']))
@@ -263,8 +285,10 @@ def _dumpFields2JSONStr(fields, pjson = False) :
 def ConvertFC2JSON(fc, ftmp, pjson = False) :
     desc_fc = arcpy.Describe(fc)
     feature_type = None
+    shape_type = None
     try :
         feature_type = desc_fc.featureType
+        shape_type = _getEsriGeometryType(desc_fc.shapeType)
     except :
         pass
 
@@ -281,6 +305,7 @@ def ConvertFC2JSON(fc, ftmp, pjson = False) :
     
     #add Z, M info
     if feature_type :
+        ftmp.write(u'"geometryType" : "{0}",'.format(shape_type) + NL)
         ftmp.write(u'"hasZ": {0},'.format(u'true' if desc_fc.hasZ else u'false') + NL)
         ftmp.write(u'"hasM": {0},'.format(u'true' if desc_fc.hasM else u'false') + NL)
         ftmp.write(u'"spatialReference": {{"wkid":{0}}},'.format(desc_fc.spatialReference.factoryCode) + NL)
@@ -402,10 +427,19 @@ if __name__ == '__main__':
 
     try:
         #fName = u'c:/temp/test-null-geom.json'
-        fName = u'c:/temp/testMOnly - null.json'
+        #fName = u'c:/temp/testMOnly - null.json'
+        fName = u'd:/data/json/gatves4_utf8.json'
+        #fName = u'c:/temp/___test.json'
+        #fcName = u'd:/data/MDB/ArcHydroAfterNWISnew.mdb/timeMonitoringXY2'
+        fcName = u'c:/temp/out.gdb/test1'
+        #fcName = u'c:/temp/out/ca_no2_pts.shp'
+
         with codecs.open(fName, 'rb', encoding = 'utf_8_sig') as json_fc_file :    
             #ConvertJSONToFCUnenclosed(json_fc_file, u'C:/temp/temp.gdb/testJSONUtil')
-            ConvertJSONToFC(json_fc_file, u'C:/temp/temp.gdb/testJSONUtil')
+            ConvertJSONToFC(json_fc_file, fcName)
+
+        #with open(fName, 'wb') as json_fc_file :    
+         #   ConvertFC2JSON(fcName, json_fc_file, pjson=True)
 
     except JUError as err:
         print str(err)
