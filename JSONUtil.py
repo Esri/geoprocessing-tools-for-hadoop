@@ -30,7 +30,12 @@ def _createDataset(output_fc, json_fc, geomType = None, geomFieldName = None) :
     #add fields
     attributeFieldList = []
     for field in json_fc[u'fields'] :
-        field_type = field[u'type'][len('esriFieldType'):]
+        field_type = None
+        if field.has_key(u'type'):
+            field_type = field[u'type'][len('esriFieldType'):]
+        else:
+            field_type = 'TEXT'
+
         if field_type != 'OID' and field[u'name'] not in ['Shape_Length', 'Shape_Area', geomFieldName]:
             if field_type == u'String' :
                 field_type = 'TEXT'
@@ -55,14 +60,14 @@ def _iterLoadUnenclosedJSON(json_file):
         line = unicode(json_file.read(1024 * 4))
         if len(line) == 0 : 
             break;
-        buffer += line.strip(u' \n\r\t')
+        buffer += line.strip(u'\n\r\t')
         while True:
             try:
                 r = dec.raw_decode(buffer)
             except:
                 break
             yield r[0]
-            buffer = buffer[r[1]:].strip(u' \n\r\t')
+            buffer = buffer[r[1]:].strip(u'\n\r\t')
 
 ##################################################
 def _getFCProps(feature) :
@@ -104,7 +109,20 @@ def _getFCProps(feature) :
             field['alias'] = fld_name
             fld_type = type(fld_val)
             if fld_type == str or fld_type == unicode:
-                field['type'] = 'esriFieldTypeString'
+                date = None
+                fmts = ['%Y-%m-%d %H:%M:%S', '%Y-%m-%d'] #TODO : support iso8601 string representation '%Y-%m-%dT%H:%M:%S.%f%z'
+                for fmt in fmts:
+                    try:
+                        date = datetime.datetime.strptime(fld_val, fmt)
+                        break
+                    except:
+                        pass
+                
+                if date is not None:
+                    field['type'] = 'esriFieldTypeDate'
+                else:
+                    field['type'] = 'esriFieldTypeString'
+
             elif fld_type == int or  fld_type == long:
                 if fld_name == 'OBJECTID' or fld_name == 'OID' or fld_name == 'FID' :
                     field['type'] = 'esriFieldTypeOID'
@@ -206,7 +224,7 @@ def ConvertJSONToFCUnenclosed(json_file, output_fc) :
                     row.append(geom)
                     
                 cursor.insertRow(row)
-    except :    
+    except :  
         raise JUError('Cannot save: ' + output_fc)
 
     return
@@ -412,38 +430,11 @@ def ConvertFC2JSONUnenclosed(fc, ftmp, pjson = False) :
 class JUError(Exception):
     reason = ''
     def __init__(self, reason):
-        self.reason = reason
-    def __str__(self):
-        return self.reason
-
-######################################################################
-######################################################################
-######################################################################
-import codecs
-
-if __name__ == '__main__':
-    
-    arcpy.gp.overwriteOutput = 1
-
-    try:
-        #fName = u'c:/temp/test-null-geom.json'
-        #fName = u'c:/temp/testMOnly - null.json'
-        fName = u'd:/data/json/gatves4_utf8.json'
-        #fName = u'c:/temp/___test.json'
-        #fcName = u'd:/data/MDB/ArcHydroAfterNWISnew.mdb/timeMonitoringXY2'
-        fcName = u'c:/temp/out.gdb/test1'
-        #fcName = u'c:/temp/out/ca_no2_pts.shp'
-
-        with codecs.open(fName, 'rb', encoding = 'utf_8_sig') as json_fc_file :    
-            #ConvertJSONToFCUnenclosed(json_fc_file, u'C:/temp/temp.gdb/testJSONUtil')
-            ConvertJSONToFC(json_fc_file, fcName)
-
-        #with open(fName, 'wb') as json_fc_file :    
-         #   ConvertFC2JSON(fcName, json_fc_file, pjson=True)
-
-    except JUError as err:
-        print str(err)
-    except:
+        exep_info = None
         for ei in sys.exc_info() :
             if isinstance(ei, Exception) :
-                print str(ei)
+                exep_info = str(ei)
+  
+        self.reason = reason + ('. ' + exep_info) if exep_info is not None else ""
+    def __str__(self):
+        return self.reason
