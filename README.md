@@ -17,11 +17,12 @@ See these tools in action as part of the samples in [GIS Tools for Hadoop](https
 * Tools that copy data files from ArcGIS to Hadoop, and copy files from Hadoop to ArcGIS.
 * Tools to run an [Oozie](http://oozie.apache.org/) workflow in Hadoop, and to check the status of a submitted 
 workflow.
-* [Wiki](https://github.com/Esri/geoprocessing-tools-for-hadoop/wiki)
+* [Wiki](https://github.com/Esri/geoprocessing-tools-for-hadoop/wiki) of available geoprocessing tools.
+* [Tutorials](https://github.com/Esri/gis-tools-for-hadoop/wiki) on how to run the geoprocessing tools.
 
 ## Instructions
 1. Download this repository as a .zip file and unzip to a suitable location or clone the repository with a git tool.
-2. WebHDFS and Requests libraries in the tool folder are provided for convenience. Remove 'webhdfs' or 'requests' folders in case there is a need to use libraries installed in /site-packages folder.
+2. WebHDFS and Requests libraries in the tool folder are provided for convenience. If you know you will using libraries installed in /site-packages folder then remove 'webhdfs' or 'requests' folders - otherwise do not.
 3. In the ‘ArcToolbox’ pane of [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop/), 
 use the [‘Add Toolbox…’ command](http://resources.arcgis.com/en/help/main/10.2/index.html#//003q0000001m000000) 
 to add the Hadoop Tools toolbox (the HadoopTools.pyt file you saved in step 1) file 

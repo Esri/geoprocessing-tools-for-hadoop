@@ -30,7 +30,12 @@ def _createDataset(output_fc, json_fc, geomType = None, geomFieldName = None) :
     #add fields
     attributeFieldList = []
     for field in json_fc[u'fields'] :
-        field_type = field[u'type'][len('esriFieldType'):]
+        field_type = None
+        if field.has_key(u'type'):
+            field_type = field[u'type'][len('esriFieldType'):]
+        else:
+            field_type = 'TEXT'
+
         if field_type != 'OID' and field[u'name'] not in ['Shape_Length', 'Shape_Area', geomFieldName]:
             if field_type == u'String' :
                 field_type = 'TEXT'
@@ -55,14 +60,14 @@ def _iterLoadUnenclosedJSON(json_file):
         line = unicode(json_file.read(1024 * 4))
         if len(line) == 0 : 
             break;
-        buffer += line.strip(u' \n\r\t')
+        buffer += line.strip(u'\n\r\t')
         while True:
             try:
                 r = dec.raw_decode(buffer)
             except:
                 break
             yield r[0]
-            buffer = buffer[r[1]:].strip(u' \n\r\t')
+            buffer = buffer[r[1]:].strip(u'\n\r\t')
 
 ##################################################
 def _getFCProps(feature) :
@@ -71,28 +76,28 @@ def _getFCProps(feature) :
     # get geometry props
     geomType = None
     if u'geometry' in feature :
-
         geom = feature[u'geometry']
-        if u'rings' in geom :
-            geomType = u'esriGeometryPolygon'
-        elif u'paths' in geom :
-            geomType = u'esriGeometryPolyline'
-        elif u'points' in geom :
-            geomType = u'esriGeometryMultipoint'
-        elif u'x' in geom :
-            geomType = u'esriGeometryPoint'
-        else :
-            raise JUError('Unknown geometry type')
+        if geom != None :
+            if u'spatialReference' in geom :
+                json_fc[u'spatialReference'] = geom[u'spatialReference']
+            if u'z' in geom :
+                json_fc[u'hasZ'] = True
+            if u'm' in geom :
+                json_fc[u'hasM'] = True
+                
+            if u'rings' in geom :
+                geomType = u'esriGeometryPolygon'
+            elif u'paths' in geom :
+                geomType = u'esriGeometryPolyline'
+            elif u'points' in geom :
+                geomType = u'esriGeometryMultipoint'
+            elif u'x' in geom :
+                geomType = u'esriGeometryPoint'
+            else :
+                raise JUError('Unknown geometry type')
 
-        if geomType :
-            json_fc[u'geometryType'] = geomType
+        json_fc[u'geometryType'] = geomType
         
-        if u'spatialReference' in geom :
-            json_fc[u'spatialReference'] = geom[u'spatialReference']
-        if u'z' in geom :
-            json_fc[u'hasZ'] = True
-        if u'm' in geom :
-            json_fc[u'hasM'] = True
 
     # get attribute props
     if u'attributes' in feature:
@@ -104,7 +109,20 @@ def _getFCProps(feature) :
             field['alias'] = fld_name
             fld_type = type(fld_val)
             if fld_type == str or fld_type == unicode:
-                field['type'] = 'esriFieldTypeString'
+                date = None
+                fmts = ['%Y-%m-%d %H:%M:%S', '%Y-%m-%d'] #TODO : support iso8601 string representation '%Y-%m-%dT%H:%M:%S.%f%z'
+                for fmt in fmts:
+                    try:
+                        date = datetime.datetime.strptime(fld_val, fmt)
+                        break
+                    except:
+                        pass
+                
+                if date is not None:
+                    field['type'] = 'esriFieldTypeDate'
+                else:
+                    field['type'] = 'esriFieldTypeString'
+
             elif fld_type == int or  fld_type == long:
                 if fld_name == 'OBJECTID' or fld_name == 'OID' or fld_name == 'FID' :
                     field['type'] = 'esriFieldTypeOID'
@@ -128,8 +146,34 @@ def _getGeometryType(json_fc) :
                         'esriGeometryMultipoint' : 'MULTIPOINT',
                         'esriGeometryPoint'      : 'POINT'}[json_fc[u'geometryType']]
     except :
-            raise JUError('Unknown geometry type')
+        geomType = 'POINT'
+        
     return geomType
+
+##################################################
+def _getEsriGeometryType(geom_type) :
+    esriGeomType = None
+    try :
+        esriGeomType = {'Polygon'    : 'esriGeometryPolygon',
+                        'Polyline'   : 'esriGeometryPolyline',
+                        'MultiPoint' : 'esriGeometryMultipoint',
+                        'Point'      : 'esriGeometryPoint'}[geom_type]
+    except :
+        esriGeomType = 'POINT'
+        
+    return esriGeomType
+
+##################################################
+def _getEmptyGeom(geomType) :
+    if geomType == 'POINT' :
+        return u'{"x" : null}'
+    if geomType == 'MULTIPOINT' :
+        return u'{"points" : [  ]}'
+    if geomType == 'POLYLINE' :
+        return u'{"paths" : [ ]}'
+    if geomType == 'POLYGON' :
+        return u'{"rings" : [ ]}'
+    raise JUError('Unknown geometry type')
 
 ##################################################
 def ConvertJSONToFCUnenclosed(json_file, output_fc) :
@@ -139,9 +183,12 @@ def ConvertJSONToFCUnenclosed(json_file, output_fc) :
     for feature in _iterLoadUnenclosedJSON(json_file) :
         if 'fields' in feature :
             raise JUError(json_file.name + ' is not an unenclosed JSON')
+        
         json_fc = _getFCProps(feature)
-        json_file.seek(0)
+        if u'geometryType' in json_fc and json_fc[u'geometryType'] == None: 
+            continue
         break
+    json_file.seek(0)
 
     geomType = _getGeometryType(json_fc)
 
@@ -161,6 +208,9 @@ def ConvertJSONToFCUnenclosed(json_file, output_fc) :
 
     #insert features
     try :
+        if geomType :
+            geomEmpty = _getEmptyGeom(geomType)
+            
         with arcpy.da.InsertCursor(output_fc, field_list + ([u'shape@json'] if geomType else [])) as cursor:
             for feature in _iterLoadUnenclosedJSON(json_file) :
                 row = []
@@ -169,10 +219,12 @@ def ConvertJSONToFCUnenclosed(json_file, output_fc) :
                     
                 if geomType :
                     geom = unicode(json.dumps(feature[u'geometry']))
+                    if geom == 'null' :
+                        geom = geomEmpty
                     row.append(geom)
                     
                 cursor.insertRow(row)
-    except :    
+    except :  
         raise JUError('Cannot save: ' + output_fc)
 
     return
@@ -193,23 +245,37 @@ def ConvertJSONToFC(json_file, output_fc) :
     
     #prepare new field list for insert cursor
     field_list = []
+    field_list_date = []
     desc_output_fc = arcpy.Describe(output_fc)
     output_fields = desc_output_fc.fields
     
     for field in output_fields :
         if field.type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area']:
             field_list.append(unicode(field.name))
+        if field.type == 'Date':
+            field_list_date.append(unicode(field.name))
     
     #insert features
     try :
+        if geomType :
+            geomEmpty = _getEmptyGeom(geomType)
+            
         with arcpy.da.InsertCursor(output_fc, field_list + ([u'shape@json'] if geomType else [])) as cursor:
             for feature in json_fc[u'features'] :
                 row = []
                 for field in attributeFieldList :
-                    row.append(feature[u'attributes'][field])
+                    
+                    attr = feature[u'attributes'][field]
+                    
+                    # convert JSDate integer to string
+                    if (type(attr) == int or type(attr) == long) and (field in field_list_date):
+                        attr = datetime.datetime.utcfromtimestamp(float(attr) / 1000.)
+                    row.append(attr)
                     
                 if geomType :
                     geom = unicode(json.dumps(feature[u'geometry']))
+                    if geom == 'null' :
+                        geom = geomEmpty
                     row.append(geom)
                     
                 cursor.insertRow(row)
@@ -237,8 +303,10 @@ def _dumpFields2JSONStr(fields, pjson = False) :
 def ConvertFC2JSON(fc, ftmp, pjson = False) :
     desc_fc = arcpy.Describe(fc)
     feature_type = None
+    shape_type = None
     try :
         feature_type = desc_fc.featureType
+        shape_type = _getEsriGeometryType(desc_fc.shapeType)
     except :
         pass
 
@@ -255,6 +323,7 @@ def ConvertFC2JSON(fc, ftmp, pjson = False) :
     
     #add Z, M info
     if feature_type :
+        ftmp.write(u'"geometryType" : "{0}",'.format(shape_type) + NL)
         ftmp.write(u'"hasZ": {0},'.format(u'true' if desc_fc.hasZ else u'false') + NL)
         ftmp.write(u'"hasM": {0},'.format(u'true' if desc_fc.hasM else u'false') + NL)
         ftmp.write(u'"spatialReference": {{"wkid":{0}}},'.format(desc_fc.spatialReference.factoryCode) + NL)
@@ -361,28 +430,11 @@ def ConvertFC2JSONUnenclosed(fc, ftmp, pjson = False) :
 class JUError(Exception):
     reason = ''
     def __init__(self, reason):
-        self.reason = reason
-    def __str__(self):
-        return self.reason
-
-######################################################################
-######################################################################
-######################################################################
-import codecs
-
-if __name__ == '__main__':
-    
-    arcpy.gp.overwriteOutput = 1
-
-    try:
-        fName = u'c:/temp/test.json'
-        with codecs.open(fName, 'rb', encoding = 'utf_8_sig') as json_fc_file :    
-            #ConvertJSONToFCUnenclosed(json_fc_file, u'C:/temp/temp.gdb/testJSONUtil')
-            ConvertJSONToFC(json_fc_file, u'C:/temp/temp.gdb/testJSONUtil')
-
-    except JUError as err:
-        print str(err)
-    except:
+        exep_info = None
         for ei in sys.exc_info() :
             if isinstance(ei, Exception) :
-                print str(ei)
+                exep_info = str(ei)
+  
+        self.reason = reason + ('. ' + exep_info) if exep_info is not None else ""
+    def __str__(self):
+        return self.reason
