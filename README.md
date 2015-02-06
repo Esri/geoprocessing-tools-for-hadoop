@@ -5,7 +5,7 @@ The __Geoprocessing Tools for Hadoop__ provides tools to help integrate ArcGIS w
 tools are provided that:
 * Enable the exchange of data between an 
 [ArcGIS Geodatabase]
-(http://resources.arcgis.com/en/help/main/10.1/index.html#/What_is_a_geodatabase/003n00000001000000/) and a 
+(http://resources.arcgis.com/en/help/main/10.2/index.html#/What_is_a_geodatabase/003n00000001000000/) and a 
 Hadoop system, and 
 * Allow ArcGIS users to run Hadoop workflow jobs.
 
@@ -23,7 +23,7 @@ workflow.
 1. Download this repository as a .zip file and unzip to a suitable location or clone the repository with a git tool.
 2. WebHDFS and Requests libraries in the tool folder are provided for convenience. Remove 'webhdfs' or 'requests' folders in case there is a need to use libraries installed in /site-packages folder.
 3. In the ‘ArcToolbox’ pane of [ArcGIS Desktop](http://www.esri.com/software/arcgis/arcgis-for-desktop/), 
-use the [‘Add Toolbox…’ command](http://resources.arcgis.com/en/help/main/10.1/index.html#//003q0000001m000000) 
+use the [‘Add Toolbox…’ command](http://resources.arcgis.com/en/help/main/10.2/index.html#//003q0000001m000000) 
 to add the Hadoop Tools toolbox (the HadoopTools.pyt file you saved in step 1) file 
 into ArcGIS Desktop.
 4. Use the tools individually, or use them in models and scripts, such as the examples 
@@ -56,7 +56,7 @@ Find a bug or want to request a new feature?  Please let us know by submitting a
 Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing)
 
 ## Licensing
-Copyright 2013 Esri
+Copyright 2013-2015 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
