@@ -364,11 +364,9 @@ def ConvertFC2JSON(fc, ftmp, pjson = False) :
             attributes_str = unicode(json.dumps(attributes_json, indent = (4 if pjson else None)))
             if feature_type :    
                 geometry_str = unicode(row[len(row) - 1]) if pjson != True else unicode(json.dumps(json.loads(row[len(row) - 1]), indent=4))
-                row_json_str = u'{{%s"attributes": {0},%s"geometry": {1}%s}}'.format(attributes_str, geometry_str)
-                row_json_str = row_json_str % (NL, NL, NL)
+                row_json_str = u'{{{2}"attributes": {0},{3}"geometry": {1}{4}}}'.format(attributes_str, geometry_str, NL, NL, NL)
             else:
-                row_json_str = u'{{%s"attributes": {0}%s}}'.format(attributes_str)
-                row_json_str = row_json_str % (NL, NL)
+                row_json_str = u'{{{1}"attributes": {0}{2}}}'.format(attributes_str, NL, NL)
 
             ftmp.write(row_json_str)
             
@@ -418,11 +416,9 @@ def ConvertFC2JSONUnenclosed(fc, ftmp, pjson = False) :
             attributes_str = unicode(json.dumps(attributes_json, indent = (4 if pjson else None)))
             if feature_type :    
                 geometry_str = unicode(row[len(row) - 1]) if pjson != True else unicode(json.dumps(json.loads(row[len(row) - 1]), indent=4))
-                row_json_str = u'{{%s"attributes": {0},%s"geometry": {1}%s}}%s'.format(attributes_str, geometry_str)
-                row_json_str = row_json_str % (NL, NL, NL, NL)
+                row_json_str = u'{{{2}"attributes": {0},{3}"geometry": {1}{4}}}{5}'.format(attributes_str, geometry_str, NL, NL, NL, NL)
             else:
-                row_json_str = u'{{%s"attributes": {0}%s}}%s'.format(attributes_str)
-                row_json_str = row_json_str % (NL, NL, NL)
+                row_json_str = u'{{{1}"attributes": {0}{2}}}{3}'.format(attributes_str, NL, NL, NL)
 
             ftmp.write(row_json_str)
 
