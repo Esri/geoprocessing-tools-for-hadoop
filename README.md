@@ -9,7 +9,7 @@ tools are provided that:
 Hadoop system, and 
 * Allow ArcGIS users to run Hadoop workflow jobs.
 
-See these tools in action as part of the samples in [GIS Tools for Hadoop](https://github.com/Esri/gis-tools-for-hadoop).
+See these tools in action as part of the [samples](https://github.com/Esri/gis-tools-for-hadoop/tree/master/samples) in [GIS Tools for Hadoop](https://github.com/Esri/gis-tools-for-hadoop).
 
 ## Features
 
@@ -17,6 +17,7 @@ See these tools in action as part of the samples in [GIS Tools for Hadoop](https
 * Tools that copy data files from ArcGIS to Hadoop, and copy files from Hadoop to ArcGIS.
 * Tools to run an [Oozie](http://oozie.apache.org/) workflow in Hadoop, and to check the status of a submitted 
 workflow.
+
 * [Wiki](https://github.com/Esri/geoprocessing-tools-for-hadoop/wiki) of available geoprocessing tools.
 * [Tutorials](https://github.com/Esri/gis-tools-for-hadoop/wiki) on how to run the geoprocessing tools.
 
