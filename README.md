@@ -18,6 +18,8 @@ See these tools in action as part of the [samples](https://github.com/Esri/gis-t
 * Tools to run an [Oozie](http://oozie.apache.org/) workflow in Hadoop, and to check the status of a submitted 
 workflow.
 
+## Wiki and Tutorials
+
 * [Wiki](https://github.com/Esri/geoprocessing-tools-for-hadoop/wiki) of available geoprocessing tools.
 * [Tutorials](https://github.com/Esri/gis-tools-for-hadoop/wiki) on how to run the geoprocessing tools.
 
