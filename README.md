@@ -47,6 +47,8 @@ at http://docs.python-requests.org/en/latest/user/install/#install).
 
 ## Resources
 
+* [GeoData Blog on the ArcGIS Blogs](http://blogs.esri.com/esri/arcgis/author/jonmurphy/)
+* [Big Data Place on GeoNet](https://geonet.esri.com/groups/big-data)
 * [ArcGIS Geodata Resource Center]( http://resources.arcgis.com/en/communities/geodata/)
 * [ArcGIS Blog](http://blogs.esri.com/esri/arcgis/)
 * [twitter@esri](http://twitter.com/esri)
