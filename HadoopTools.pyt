@@ -69,14 +69,14 @@ class CopyToHDFS(object):
         host = arcpy.Parameter(
             name="host_name",
             displayName="HDFS server hostname",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input")
 
         port = arcpy.Parameter(
             name="port_number",
             displayName="HDFS TCP port number",
-            datatype="Long",
+            datatype="GPLong",
             parameterType="Required",
             direction="Input")
         port.value = 50070
@@ -84,14 +84,14 @@ class CopyToHDFS(object):
         user = arcpy.Parameter(
             name="user_name",
             displayName="HDFS username",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input")
 
         in_remote_file = arcpy.Parameter(
             name="in_remote_file",
             displayName="HDFS remote file",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input")
 
@@ -105,7 +105,7 @@ class CopyToHDFS(object):
         out_remote_file = arcpy.Parameter(
             name="out_remote_file",
             displayName="Output HDFS file",
-            datatype="String",
+            datatype="GPString",
             parameterType="Derived",
             direction="Output")
 
@@ -200,14 +200,14 @@ class CopyFromHDFS(object):
         host = arcpy.Parameter(
             name="host_name",
             displayName="HDFS server hostname",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input")
 
         port = arcpy.Parameter(
             name="port_number",
             displayName="HDFS TCP port number",
-            datatype="Long",
+            datatype="GPLong",
             parameterType="Required",
             direction="Input")
         port.value = 50070
@@ -215,14 +215,14 @@ class CopyFromHDFS(object):
         user = arcpy.Parameter(
             name="user_name",
             displayName="HDFS username",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input")
 
         in_remote_file = arcpy.Parameter(
             name="in_remote_file",
             displayName="HDFS remote file",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input")
 
@@ -321,7 +321,7 @@ class FeaturesToJSON(object):
         json_type = arcpy.Parameter(
             name="json_type",
             displayName="JSON type",
-            datatype="String",
+            datatype="GPString",
             parameterType="Optional",
             direction="Input")
         
@@ -395,7 +395,7 @@ class JSONToFeatures(object):
         json_type = arcpy.Parameter(
             name="json_type",
             displayName="JSON type",
-            datatype="String",
+            datatype="GPString",
             parameterType="Optional",
             direction="Input")
         
@@ -452,7 +452,7 @@ class ExecuteWorkflow(object):
         in_oozie_url = arcpy.Parameter(
             displayName="Oozie URL",
             name="in_oozie_url",
-            datatype="String",
+            datatype="GPString",
             parameterType="Required",
             direction="Input")
         
@@ -466,7 +466,7 @@ class ExecuteWorkflow(object):
         track_status = arcpy.Parameter(
             name="track_status",
             displayName="Track status",
-            datatype="Boolean",
+            datatype="GPBoolean",
             parameterType="Optional",
             direction="Input")
         
@@ -477,7 +477,7 @@ class ExecuteWorkflow(object):
         job_succseeded = arcpy.Parameter(
             name="job_succseeded",
             displayName="Job succseeded",
-            datatype="Boolean",
+            datatype="GPBoolean",
             parameterType="Derived",
             direction="Output")
 
@@ -556,14 +556,14 @@ class ExecuteWorkflow(object):
         #host = arcpy.Parameter(
             #name="host_name",
             #displayName="HDFS server hostname",
-            #datatype="String",
+            #datatype="GPString",
             #parameterType="Required",
             #direction="Input")
 
         #port = arcpy.Parameter(
             #name="port_number",
             #displayName="HDFS TCP port number",
-            #datatype="Long",
+            #datatype="GPLong",
             #parameterType="Required",
             #direction="Input")
         #port.value = 50070
@@ -571,14 +571,14 @@ class ExecuteWorkflow(object):
         #user = arcpy.Parameter(
             #name="user_name",
             #displayName="HDFS username",
-            #datatype="String",
+            #datatype="GPString",
             #parameterType="Required",
             #direction="Input")
 
         #command = arcpy.Parameter(
             #name="hdfs_command",
             #displayName="HDFS command",
-            #datatype="String",
+            #datatype="GPString",
             #parameterType="Required",
             #direction="Input")
         #command.filter.list = [HDFSCommand._cmdCreateFolder, HDFSCommand._cmdDeleteFile, HDFSCommand._cmdDeleteFolderRecursively]
@@ -586,14 +586,14 @@ class ExecuteWorkflow(object):
         #in_remote_path = arcpy.Parameter(
             #name="in_remote_path",
             #displayName="HDFS remote path",
-            #datatype="String",
+            #datatype="GPString",
             #parameterType="Required",
             #direction="Input")
 
         #command_output = arcpy.Parameter(
             #name="command_output",
             #displayName="Command output",
-            #datatype="String",
+            #datatype="GPString",
             #parameterType="Derived",
             #direction="Output",
             #multiValue = True)
