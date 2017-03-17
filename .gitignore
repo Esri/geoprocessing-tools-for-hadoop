@@ -1,0 +1,6 @@
+*.pyt~
+*.xml
+*.xml
+*.pyc
+*.iml
+.idea/.name
