@@ -36,7 +36,7 @@ def _createDataset(output_fc, json_fc, geomType = None, geomFieldName = None) :
         else:
             field_type = 'TEXT'
 
-        if field_type != 'OID' and field[u'name'] not in ['Shape_Length', 'Shape_Area', geomFieldName]:
+        if field_type != 'OID' and field[u'name'] not in ['Shape_Length', 'Shape_Area','SHAPE_Length', 'SHAPE_Area', geomFieldName]:
             if field_type == u'String' :
                 field_type = 'TEXT'
             arcpy.AddField_management(in_mem_fc, field[u'name'], field_type, "", "", (field[u'length'] if field.has_key(u'length') else ""), field[u'alias'], True)
@@ -203,7 +203,7 @@ def ConvertJSONToFCUnenclosed(json_file, output_fc) :
     output_fields = desc_output_fc.fields
     
     for field in output_fields :
-        if field.type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area']:
+        if field.type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area','SHAPE_Length', 'SHAPE_Area']:
             field_list.append(unicode(field.name))
 
     #insert features
@@ -250,7 +250,7 @@ def ConvertJSONToFC(json_file, output_fc) :
     output_fields = desc_output_fc.fields
     
     for field in output_fields :
-        if field.type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area']:
+        if field.type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area','SHAPE_Length', 'SHAPE_Area']:
             field_list.append(unicode(field.name))
         if field.type == 'Date':
             field_list_date.append(unicode(field.name))
@@ -287,7 +287,7 @@ def _dumpFields2JSONStr(fields, pjson = False) :
     fields_json = []
     for field in fields :
         field_type = field.type
-        if field_type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area']:
+        if field_type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area','SHAPE_Length', 'SHAPE_Area']:
             field_json = {}
             field_json[u'alias'] = unicode(field.aliasName)
             field_json[u'name'] = unicode(field.name)
@@ -335,7 +335,7 @@ def ConvertFC2JSON(fc, ftmp, pjson = False) :
         shape_field = unicode(desc_fc.shapeFieldName)
     
     for field in fields :
-        if field.type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area']:
+        if field.type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area','SHAPE_Length', 'SHAPE_Area']:
             field_list.append(unicode(field.name))
 
     if feature_type :
@@ -394,7 +394,7 @@ def ConvertFC2JSONUnenclosed(fc, ftmp, pjson = False) :
         shape_field = unicode(desc_fc.shapeFieldName)
     
     for field in desc_fc.fields :
-        if field.type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area']:
+        if field.type not in ['Geometry', 'OID'] and field.name not in ['Shape_Length', 'Shape_Area','SHAPE_Length', 'SHAPE_Area']:
             field_list.append(unicode(field.name))
 
     if feature_type :
