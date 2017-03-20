@@ -9,7 +9,7 @@ tools are provided that:
 Hadoop system, and 
 * Allow ArcGIS users to run Hadoop workflow jobs.
 
-See these tools in action as part of the samples in [GIS Tools for Hadoop](https://github.com/Esri/gis-tools-for-hadoop).
+See these tools in action as part of the [samples](https://github.com/Esri/gis-tools-for-hadoop/tree/master/samples) in [GIS Tools for Hadoop](https://github.com/Esri/gis-tools-for-hadoop).
 
 ## Features
 
@@ -17,6 +17,9 @@ See these tools in action as part of the samples in [GIS Tools for Hadoop](https
 * Tools that copy data files from ArcGIS to Hadoop, and copy files from Hadoop to ArcGIS.
 * Tools to run an [Oozie](http://oozie.apache.org/) workflow in Hadoop, and to check the status of a submitted 
 workflow.
+
+## Wiki and Tutorials
+
 * [Wiki](https://github.com/Esri/geoprocessing-tools-for-hadoop/wiki) of available geoprocessing tools.
 * [Tutorials](https://github.com/Esri/gis-tools-for-hadoop/wiki) on how to run the geoprocessing tools.
 
@@ -44,6 +47,8 @@ at http://docs.python-requests.org/en/latest/user/install/#install).
 
 ## Resources
 
+* [GeoData Blog on the ArcGIS Blogs](http://blogs.esri.com/esri/arcgis/author/jonmurphy/)
+* [Big Data Place on GeoNet](https://geonet.esri.com/groups/big-data)
 * [ArcGIS Geodata Resource Center]( http://resources.arcgis.com/en/communities/geodata/)
 * [ArcGIS Blog](http://blogs.esri.com/esri/arcgis/)
 * [twitter@esri](http://twitter.com/esri)
@@ -57,7 +62,7 @@ Find a bug or want to request a new feature?  Please let us know by submitting a
 Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing)
 
 ## Licensing
-Copyright 2013-2015 Esri
+Copyright 2013-2016 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -72,7 +77,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 A copy of the license is available in the repository's 
-[license.txt]( https://raw.github.com/Esri/hadoop-gp-tools/master/license.txt) file.
+[license.txt](https://raw.github.com/Esri/hadoop-gp-tools/master/license.txt) file.
 
 [](Esri Tags: ArcGIS, Geoprocessing, GP, Hadoop, Spatial, Python)
 [](Esri Language: Python)
